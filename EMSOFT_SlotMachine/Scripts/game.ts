@@ -67,6 +67,9 @@ var lossNum = 0;
 var spinResult;
 var fruits = "";
 var winRatio = 0;
+var playerMoneyTxt: createjs.Text;
+var playerBetTxt: createjs.Text;
+var winningsTxt: createjs.Text;
 
 // Tally Variables
 var grapes = 0;
@@ -136,6 +139,18 @@ function resetAll() {
     winRatio = 0;
 }
 
+//Utility function to show a loss message and reduece player money
+function showLossMessage() {
+    playerMoney -= playerBet;
+    resetTally();
+}
+
+function showWinMessage() {
+    playerMoney += winnings;
+    resetTally();
+    checkJackPot(); 
+}
+
 // Utility function to check if a value falls within a range of bounds
 function checkRange(value, lowerBounds, upperBounds) {
     if (value >= lowerBounds && value <= upperBounds) {
@@ -147,7 +162,7 @@ function checkRange(value, lowerBounds, upperBounds) {
 
 //When this function is called it determines the betline results
 function Reels() {
-    var betLine = [" ", " ", " "];
+    var betLine = ["", "", ""];
     var outCome = [0, 0, 0];
 
     for (var spin = 0; spin < 3; spin++) {
@@ -185,6 +200,10 @@ function Reels() {
                 betLine[spin] = "clover";
                 clovers++;
                 break;
+            default:
+                betLine[spin] = "blank";
+                blanks++;
+                break;
             /*case checkRange(outCome[spin], 1, 27): //41.5%
                 betLine[spin] = "dollar";
                 dollars++;
@@ -194,6 +213,7 @@ function Reels() {
                 diamonds++;
                 break;*/
         }
+        
         
     }
     return betLine;
@@ -214,10 +234,10 @@ function determineWinnings() {
             winnings = playerBet * 40;
         }
         else if (bars == 3) {
-            winnings = playerBet * 10;
+            winnings = playerBet * 50;
         }
         else if (sevens == 3) {
-            winnings = playerBet * 10;
+            winnings = playerBet * 100;
         }
         /*else if (diamonds == 3) {
             winnings = playerBet * 10;
@@ -226,25 +246,25 @@ function determineWinnings() {
             winnings = playerBet * 10;
         }*/
         else if (clovers == 3) {
-            winnings = playerBet * 10;
+            winnings = playerBet * 75;
         }
         else if (grapes == 2) {
-            winnings = playerBet * 5;
+            winnings = playerBet * 2;
         }
         else if (bells == 2) {
-            winnings = playerBet * 5;
+            winnings = playerBet * 2;
         }
         else if (oranges == 2) {
-            winnings = playerBet * 5;
+            winnings = playerBet * 3;
         }
         else if (cherries == 2) {
-            winnings = playerBet * 5;
+            winnings = playerBet * 4;
         }
         else if (bars == 2) {
             winnings = playerBet * 5;
         }
         else if (sevens == 2) {
-            winnings = playerBet * 5;
+            winnings = playerBet * 20;
         }
         /*else if (diamonds == 2) {
             winnings = playerBet * 5;
@@ -253,15 +273,23 @@ function determineWinnings() {
             winnings = playerBet * 5;
         }*/
         else if (clovers == 2) {
+            winnings = playerBet * 10;
+        }
+        else if (sevens == 1) {
             winnings = playerBet * 5;
         }
         else
             winnings = playerBet * 1;
 
         winNum++;
+        controlText("winningsTxt");
     }
-    else
+    else {
         lossNum++;
+        controlText("lossingsTxt");
+    }
+
+    resetTally();
 }
 
 // spin button event
@@ -269,11 +297,38 @@ function spinButtonClicked(event: createjs.MouseEvent) {
     spinResult = Reels();
     fruits = spinResult[0] + "-" + spinResult[1] + "-" + spinResult[2];
 
-    for (var index = 0; index < NUM_REELS; index++) {
-        reelContainers[index].removeAllChildren();
-        titles[index] = new createjs.Bitmap("assets/images/" + spinResult[index] + ".png");
-        reelContainers[index].addChild(titles[index]);
+    if (playerMoney == 0) {
+        if (confirm("You ran out of Money! \nDo you want to play again?")) {
+            resetAll();
+        }
+    } else if (playerBet > playerMoney) {
+        alert("You don't have enough Money to place that bet.");
     }
+    else if (playerBet <= 0) {
+        alert("All bets must be a positive $ amount.");
+    }
+    else if (playerBet <= playerMoney) {
+        for (var index = 0; index < NUM_REELS; index++) {
+            reelContainers[index].removeAllChildren();
+            titles[index] = new createjs.Bitmap("assets/images/" + spinResult[index] + ".png");
+            reelContainers[index].addChild(titles[index]);
+        }
+        determineWinnings();
+
+    } 
+    else {
+        alert("Please enter a valid bet amount");
+    }
+}
+
+function BetOneClicked(event: createjs.MouseEvent) {
+    playerBet += 1;
+    controlText("playerBetTxt");
+}
+
+function BetMaxClicked(event: createjs.MouseEvent) {
+    playerBet += 5;
+    controlText("playerBetTxt");
 }
 
 // function for UI
@@ -303,12 +358,12 @@ function createUI() {
     //bet max button
     betMaxButton = new Button("assets/images/betMax.png", 54, 541);
     game.addChild(betMaxButton.getImg());
-    betMaxButton.getImg().addEventListener("click", spinButtonClicked);
+    betMaxButton.getImg().addEventListener("click", BetMaxClicked);
 
     //bet one button
     betOneButton = new Button("assets/images/betOne.png", 54, 606);
     game.addChild(betOneButton.getImg());
-    betOneButton.getImg().addEventListener("click", spinButtonClicked);
+    betOneButton.getImg().addEventListener("click", BetOneClicked);
 
     //Reset button
     resetButton = new Button("assets/images/reset.png", 179, 606);
@@ -319,12 +374,76 @@ function createUI() {
     powerButton = new Button("assets/images/power.png", 179, 541);
     game.addChild(powerButton.getImg());
     powerButton.getImg().addEventListener("click", spinButtonClicked);
+
+    playerMoneyTxt = new createjs.Text("", "20px Arial", "#ff7700");
+    playerMoneyTxt.x = 160;
+    playerMoneyTxt.y = 492;
+    playerMoneyTxt.textAlign = "right";
+
+    game.addChild(playerMoneyTxt);
+
+    playerBetTxt = new createjs.Text("", "20px Arial", "#ff7700");
+    playerBetTxt.x = 280;
+    playerBetTxt.y = 492;
+    playerBetTxt.textAlign = "right";
+
+    game.addChild(playerBetTxt);
+
+    winningsTxt = new createjs.Text("", "20px Arial", "#ff7700");
+    winningsTxt.x = 402;
+    winningsTxt.y = 492;
+    winningsTxt.textAlign = "right";
+
+    game.addChild(winningsTxt);
+
+
+    var jacpotText = new createjs.Text(jackpot.toString(), "20px Arial", "#ff7700");
+    jacpotText.x = 267;
+    jacpotText.y = 305;
+    // playerMoneyText.textAlign = "right"; 
+
+    game.addChild(jacpotText);
+}
+
+function controlText(type: string) {
+    if (type == "playerBetTxt") {
+
+        playerBetTxt.text = playerBet.toString();
+    } else if (type == "winningsTxt") {
+        alert("win");
+        winningsTxt.text = winnings.toString();
+        playerMoney += winnings;
+        playerMoneyTxt.text = playerMoney.toString();
+    } else if (type == "lossingsTxt") {
+        //alert("lose");
+        winningsTxt.text = "-" + playerBet.toString();
+        playerMoney -= playerBet;
+        playerMoneyTxt.text = playerMoney.toString();
+
+    } else if (type == "start") {
+        playerMoneyTxt.text = playerMoney.toString();
+    }
+
+
+
+    
+}
+
+function checkJackPot() {
+    var jackPotTry = Math.floor(Math.random() * 51 + 1);
+    var jackPotWin = Math.floor(Math.random() * 51 + 1);
+
+    if (jackPotTry == jackPotWin) {
+        alert("You won the $" + jackpot + " Jackpot!!!");
+        playerMoney += jackpot;
+        jackpot = 1000;
+    }
 }
 
 function main() {
     game = new createjs.Container(); // Instantiates the game container
 
     createUI();
-
+    controlText("start");
     stage.addChild(game); // adds the game container to the stage
 }
