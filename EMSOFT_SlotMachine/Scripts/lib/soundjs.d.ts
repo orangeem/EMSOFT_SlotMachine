@@ -18,14 +18,14 @@
 declare module createjs {
     export class FlashPlugin {
         constructor();
-
+        
         // properties
         static buildDate: string;
         flashReady: boolean;
         showOutput: boolean;
         static swfPath: string;
         static version: string;
-
+        
         // methods
         create(src: string): SoundInstance;
         getVolume(): number;
@@ -41,12 +41,12 @@ declare module createjs {
 
     export class HTMLAudioPlugin {
         constructor();
-
+        
         // properties
         defaultNumChannels: number;
         enableIOS: boolean;
         static MAX_INSTANCES: number;
-
+        
         // methods
         create(src: string): SoundInstance;
         isPreloadStarted(src: string): boolean;
@@ -73,8 +73,8 @@ declare module createjs {
         static PLAY_INTERRUPTED: string;
         static PLAY_SUCCEEDED: string;
         static SUPPORTED_EXTENSIONS: string[];
-
-
+        
+        
         // methods
         static createInstance(src: string): SoundInstance;
         static getCapabilities(): Object;
@@ -98,7 +98,7 @@ declare module createjs {
         static setMute(value: boolean): boolean;
         static setVolume(value: number): void;
         static stop(): void;
-
+        
         // EventDispatcher mixins
         static addEventListener(type: string, listener: (eventObj: Object) => boolean, useCapture?: boolean): Function;
         static addEventListener(type: string, listener: (eventObj: Object) => void, useCapture?: boolean): Function;
@@ -129,7 +129,7 @@ declare module createjs {
 
     export class SoundInstance extends EventDispatcher {
         constructor(src: string, owner: Object);
-
+        
         // properties
         gainNode: any;
         pan: number;
@@ -165,12 +165,12 @@ declare module createjs {
 
     export class WebAudioPlugin {
         constructor();
-
+        
         // properties
         context: any;
         dynamicsCompressorNode: any;
         gainNode: any;
-
+        
         // methods
         addPreloadResults(src: string): boolean;
         create(src: string): SoundInstance;

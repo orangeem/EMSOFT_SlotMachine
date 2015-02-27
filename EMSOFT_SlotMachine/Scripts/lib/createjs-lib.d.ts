@@ -56,7 +56,6 @@ declare module createjs {
         clone(): Event;
         preventDefault(): void;
         remove(): void;
-        set(props: Object): Event;
         stopImmediatePropagation(): void;
         stopPropagation(): void;
         toString(): string;
@@ -94,9 +93,7 @@ declare module createjs {
         willTrigger(type: string): boolean;
     }
 
-    export function extend(subclass: () => any, superclass: () => any): () => any;     // returns the subclass prototype
     export function indexOf(array: any[], searchElement: Object): number;
-    export function promote(subclass: () => any, prefix: string): () => any;
 
     export function proxy(method: (eventObj: Object) => boolean, scope: Object, ...arg: any[]): (eventObj: Object) => any;
     export function proxy(method: (eventObj: Object) => void, scope: Object, ...arg: any[]): (eventObj: Object) => any;
