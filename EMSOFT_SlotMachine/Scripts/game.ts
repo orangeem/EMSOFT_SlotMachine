@@ -8,7 +8,7 @@ var reelContainers: createjs.Container[] = [];
 var NUM_REELS: number = 3;
 
 //Game Variables
-var playerMoney = 1000;
+var playerMoney = 10;
 var winnings = 0;
 var jackpot = 5000;
 var turn = 0;
@@ -92,6 +92,10 @@ function resetAll() {
     winRatio = 0;
     TotalMoney = 0;
     spinButton.mouseEnabled = true;
+    spinButton.alpha = 1;
+    playerMoneyTxt.text = "1000";
+    playerBetTxt.text = "";
+    winningsTxt.text = "";
 }
 
 //Utility function to show a loss message and reduece player money
@@ -157,7 +161,7 @@ function Reels() {
                 clovers++;
                 break;
             default:
-                betLine[spin] = "blank";
+                betLine[spin] = "banana";
                 blanks++;
                 break;            
         }       
@@ -237,8 +241,10 @@ function spinButtonClicked(event: createjs.MouseEvent) {
 
     if (playerMoney == 0) {
         alert("You ran out of Money! \n If you want to play again, please push the reset button");
-        spinButton.alpha = 0.5;
+
+        
         spinButton.mouseEnabled = false;
+        spinButton.alpha = 0.5;
             
         
     } else if (playerBet > playerMoney) {
@@ -280,10 +286,12 @@ function BetMaxClicked(event: createjs.MouseEvent) {
 
 //this function for resetbutton. 
 function resetClicked(event: createjs.MouseEvent) {
-    spinButton.mouseEnabled = true;
-    spinButton.alpha = 1;
-    alert("Reset");
-    resetAll();
+    if (confirm("Do you want to reset the game?")) {
+
+        spinButton.mouseEnabled = true;
+        
+        resetAll();
+    }
     
 }
 
@@ -295,11 +303,13 @@ function powerClicked(event: createjs.MouseEvent) {
     }
 }
 
+//button event listener
 function _buttonOver(event: createjs.MouseEvent): void {
     event.currentTarget.alpha = 0.5;
         
 }
 
+//button event listener
 function _buttonOut(event: createjs.MouseEvent): void {
     event.currentTarget.alpha = 1;
         
@@ -414,12 +424,13 @@ function createUI() {
     game.addChild(jacpotText);
 }
 
+//function for controling text 
 function controlText(type: string) {
     if (type == "playerBetTxt") {
 
         playerBetTxt.text = playerBet.toString();
     } else if (type == "winningsTxt") {
-        alert("win");
+        
         winningsTxt.text = winnings.toString();
         playerMoney += winnings;
         playerMoneyTxt.text = playerMoney.toString();
