@@ -8,7 +8,7 @@ var reelContainers: createjs.Container[] = [];
 var NUM_REELS: number = 3;
 
 //Game Variables
-var playerMoney = 10;
+var playerMoney = 1000;
 var winnings = 0;
 var jackpot = 5000;
 var turn = 0;
@@ -28,11 +28,8 @@ var grapes = 0;
 var oranges = 0;
 var cherries = 0;
 var bars = 0;
-var bells = 0;
 var sevens = 0;
-var dollars = 0;
 var grape = 0;
-var bonus = 0;
 var clovers = 0;
 var diamonds = 0;
 
@@ -69,11 +66,8 @@ function resetTally() {
     oranges = 0;
     cherries = 0;
     bars = 0;
-    bells = 0;
     sevens = 0;
-    dollars = 0;
     grape = 0;
-    bonus = 0;
     clovers = 0;
     diamonds = 0;
     blanks = 0;
@@ -104,6 +98,7 @@ function showLossMessage() {
     resetTally();
 }
 
+//Utility function to show a win message and add player money
 function showWinMessage() {
     playerMoney += winnings;
     resetTally();
@@ -138,7 +133,7 @@ function Reels() {
                 break;
             case checkRange(outCome[spin], 38, 46): //13.8%
                 betLine[spin] = "diamond";
-                bells++;
+                diamonds++;
                 break;
             case checkRange(outCome[spin], 47, 54): //12.3%
                 betLine[spin] = "orange";
@@ -196,7 +191,7 @@ function determineWinnings() {
         else if (grapes == 2) {
             winnings = playerBet * 2;
         }
-        else if (bells == 2) {
+        else if (diamonds == 2) {
             winnings = playerBet * 2;
         }
         else if (oranges == 2) {
@@ -240,12 +235,10 @@ function spinButtonClicked(event: createjs.MouseEvent) {
     fruits = spinResult[0] + "-" + spinResult[1] + "-" + spinResult[2];
 
     if (playerMoney == 0) {
-        alert("You ran out of Money! \n If you want to play again, please push the reset button");
-
+        alert("You ran out of Money! \n If you want to play again, please click the reset button");
         
         spinButton.mouseEnabled = false;
-        spinButton.alpha = 0.5;
-            
+        spinButton.alpha = 0.5;            
         
     } else if (playerBet > playerMoney) {
         alert("You don't have enough Money to place that bet.");        
@@ -295,6 +288,7 @@ function resetClicked(event: createjs.MouseEvent) {
     
 }
 
+//this function for powerbutton event
 function powerClicked(event: createjs.MouseEvent) {
 
     if (confirm("Do you really want to leave this game?")) {
@@ -449,6 +443,7 @@ function controlText(type: string) {
     
 }
 
+//function for checing jackpot
 function checkJackPot() {
     var jackPotTry = Math.floor(Math.random() * 51 + 1);
     var jackPotWin = Math.floor(Math.random() * 51 + 1);
@@ -460,6 +455,7 @@ function checkJackPot() {
     }
 }
 
+// Main
 function main() {
     game = new createjs.Container(); // Instantiates the game container
 

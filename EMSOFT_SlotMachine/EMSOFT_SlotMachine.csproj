@@ -74,14 +74,11 @@
   <ItemGroup>
     <Content Include="assets\images\apple.png" />
     <Content Include="assets\images\bar.png" />
-    <Content Include="assets\images\bell.png" />
     <Content Include="assets\images\betMax.png" />
     <Content Include="assets\images\betOne.png" />
-    <Content Include="assets\images\bonus.png" />
     <Content Include="assets\images\cherry.png" />
     <Content Include="assets\images\clover.png" />
     <Content Include="assets\images\diamond.png" />
-    <Content Include="assets\images\dollar.png" />
     <Content Include="assets\images\grape.png" />
     <Content Include="assets\images\machine.png" />
     <Content Include="assets\images\orange.png" />
@@ -89,7 +86,6 @@
     <Content Include="assets\images\reset.png" />
     <Content Include="assets\images\seven.png" />
     <Content Include="assets\images\spin.png" />
-    <Content Include="assets\images\strawberry.png" />
     <Content Include="css\game.css" />
     <Content Include="index.html" />
     <Content Include="Scripts\lib\easeljs-0.8.0.min.js" />
