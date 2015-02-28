@@ -8,7 +8,7 @@ var reelContainers: createjs.Container[] = [];
 var NUM_REELS: number = 3;
 
 //Game Variables
-var playerMoney = 10;
+var playerMoney = 1000;
 var winnings = 0;
 var jackpot = 5000;
 var turn = 0;
@@ -18,6 +18,7 @@ var lossNum = 0;
 var spinResult;
 var fruits = "";
 var winRatio = 0;
+var TotalMoney = 0;
 var playerMoneyTxt: createjs.Text;
 var playerBetTxt: createjs.Text;
 var winningsTxt: createjs.Text;
@@ -76,19 +77,21 @@ function resetTally() {
     clovers = 0;
     diamonds = 0;
     blanks = 0;
+    
 }
 
 // Utility function to reset the player states
 function resetAll() {
-    playerMoney = 1500;
+    playerMoney = 1000;
     winnings = 0;
-    jackpot = 10000;
+    jackpot = 5000;
     turn = 0;
     playerBet = 0;
     winNum = 0;
     lossNum = 0;
     winRatio = 0;
-    document.getElementById("spinButton").disabled = false;
+    TotalMoney = 0;
+    spinButton.mouseEnabled = true;
 }
 
 //Utility function to show a loss message and reduece player money
@@ -162,6 +165,7 @@ function Reels() {
     return betLine;
 }
 
+// function for winning money
 function determineWinnings() {
     if (blanks == 0) {
         if (grapes == 3) {
@@ -195,8 +199,7 @@ function determineWinnings() {
             winnings = playerBet * 3;
         }
         else if (cherries == 2) {
-            winnings = playerBet * 4;
-            
+            winnings = playerBet * 4;            
         }
         else if (bars == 2) {
             winnings = playerBet * 5;
@@ -214,12 +217,11 @@ function determineWinnings() {
             winnings = playerBet * 1;
 
         winNum++;
-        alert(winNum.toString());
+        TotalMoney += winnings;
         controlText("winningsTxt");
     }
     else {
         lossNum++;
-        alert(lossNum.toString());
         controlText("lossingsTxt");
     }
 
@@ -283,6 +285,14 @@ function resetClicked(event: createjs.MouseEvent) {
     alert("Reset");
     resetAll();
     
+}
+
+function powerClicked(event: createjs.MouseEvent) {
+
+    if (confirm("Do you really want to leave this game?")) {
+        alert("You won "+winNum+" times and lost "+lossNum+" times.\n You earned the total $"+TotalMoney+"\nThank you for playing slot machine. \nWe hope see you again.");
+        window.close();
+    }
 }
 
 function _buttonOver(event: createjs.MouseEvent): void {
@@ -368,9 +378,9 @@ function createUI() {
     powerButton.y = 606;
 
     game.addChild(powerButton);
-
+    
     //powerButton event listeners
-    powerButton.addEventListener("click", resetClicked);
+    powerButton.addEventListener("click", powerClicked);
     powerButton.addEventListener("mouseover", _buttonOver);
     powerButton.addEventListener("mouseout", _buttonOut);
 
